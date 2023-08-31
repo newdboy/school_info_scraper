@@ -7,21 +7,9 @@ import pandas as pd
 from webdriver_manager.chrome import ChromeDriverManager
 import os
 import time
-import shutil  # 파일 이동 관련
 import re
 import copy
 
-# print("파일 전체를 다시 다운 받고 싶으면 yes")
-# print("오류 검출로 인해 중간에서 다시 받고 싶으면 no")
-# q = input("입력해주세요: ")
-
-# file_path = "save.txt"
-# if q == "yes":
-#     try:
-#         os.remove(file_path)
-#         print(f"{file_path} 파일이 삭제되었습니다.")
-#     except:
-#         print(f"{file_path} 파일이 삭제되었습니다.")
 print("학교알리미 정보공시: 교과별(학년별) 평가계획 스크래핑 코드입니다")
 print(r"(https://www.schoolinfo.go.kr/ei/ss/pneiss_a05_s1.do)")
 year = input("연도 입력: ex)2023\n:")
@@ -30,21 +18,12 @@ school_level = input("학교 입력: ex)고등학교\n:")
 user_name = input("유저 이름 입력: ex)dong\n:")
 folder_name = input("폴더 이름 입력: ex)원하는 폴더명\n:")
 
-# try:
-#     file = open("save.txt", "r")
-#     save_file = file.read().split()
-#     file.close()
-# except:
-#     save_file = []
+
 abs_path = os.path.dirname(os.path.abspath(__file__))
-# file = open("save.txt", "a")
-# file2 = open(abs_path+"/예외처리.txt", "r")
-# exception_school = file2.read().split()
-# file2.close()
-# file2 = open(abs_path+"/예외처리.txt", "a")
 completed_school_names = list()
 erred_school_names = list()
 source_folder = f"/Users/{user_name}/Documents/{folder_name}"
+
 # 폴더가 이미 존재하는지 확인
 if not os.path.exists(source_folder):
     try:
@@ -194,22 +173,25 @@ while 1:
                                     file_count += 1
                                     continue
 
-                                print(school_name, file_list[file_count], '이 두 개가 늘 같니??. 같을 걸로 예상')
+                                # print(school_name, file_list[file_count], '이 두 개가 늘 같니??. 같을 걸로 예상')
 
                                 # 학기 선택 도전 # fixing
                                 # select_element = driver.find_element(By.ID, "gsYear")
                                 select_semester = driver.find_element(By.ID, "select_trans_dt")
                                 semester_elements = select_semester.find_elements(By.TAG_NAME, "option")
-
                                 sm_checker = True
                                 for sm_option in semester_elements:
-                                    if semester == 2:
-                                        if str(sm_option.get_attribute("value")) == str(year)+str(3):
+                                    print("sm_option.get_attribute('value')", sm_option.get_attribute('value'))
+                                    if semester == '2':
+                                        if sm_option.get_attribute("value") == str(year) + str(3):
+                                            print('okay')
                                             sm_option.click()
+                                            time.sleep(1)
                                             break
-                                    elif semester ==1:
-                                        if str(sm_option.get_attribute("value")) == str(year) + str(1):
+                                    elif semester == '1':
+                                        if sm_option.get_attribute("value") == str(year) + str(1):
                                             sm_option.click()
+                                            time.sleep(1)
                                             break
                                     else:
                                         print('학기가 없는 것 같은데, 다음 학교로 가야겠다.')
@@ -240,6 +222,7 @@ while 1:
 
 
                                 try:
+                                    print('붙임 파일을 다운로드 합니다...')
                                     attachments = driver.find_elements(By.CSS_SELECTOR,
                                                                        '#gongsiInfo > div.table_wrap > div:nth-child(3) > div.attached_file')
                                     # 아예 제목만 있고 붙임 파일 없는 경우가 있는 경우 존재. 오류 남.
@@ -374,6 +357,7 @@ while 1:
                 completed_gu_names[si_name] += [gu_name]
 
             completed_si_names.append(si_name)
+
 
     except Exception as e:
         erred_school_names.append(tmp_school_name)
