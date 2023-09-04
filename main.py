@@ -22,7 +22,8 @@ folder_name = input("폴더 이름 입력: ex)원하는 폴더명\n:")
 abs_path = os.path.dirname(os.path.abspath(__file__))
 completed_school_names = list()
 erred_school_names = list()
-source_folder = f"/Users/{user_name}/Documents/{folder_name}"
+source_folder = f"/Users/{user_name}/Library/CloudStorage/Dropbox/sj/2023-2/연구/[진행중]학교평가계획 정보공시_chatgpt/{folder_name}"
+    # "/Users/{user_name}/Documents/{folder_name}"
 
 # 폴더가 이미 존재하는지 확인
 if not os.path.exists(source_folder):
@@ -223,10 +224,16 @@ while 1:
 
                                 try:
                                     print('붙임 파일을 다운로드 합니다...')
-                                    attachments = driver.find_elements(By.CSS_SELECTOR,
-                                                                       '#gongsiInfo > div.table_wrap > div:nth-child(3) > div.attached_file')
+                                    print("year_t", type(year))
+                                    print("sem_t", type(semester))
+                                    if year == '2020' and semester == '2':
+                                        print("맞네 이거네")
+                                        attachments = driver.find_elements(By.CSS_SELECTOR,
+                                                                           '#gongsiInfo > div.table_wrap > div.attached_file')
+                                    else:
+                                        attachments = driver.find_elements(By.CSS_SELECTOR,
+                                                                           '#gongsiInfo > div.table_wrap > div:nth-child(3) > div.attached_file')
                                     # 아예 제목만 있고 붙임 파일 없는 경우가 있는 경우 존재. 오류 남.
-
                                     for attachment in attachments:
                                         file_name_elements = attachment.find_elements(By.CSS_SELECTOR, 'a.file_name')
                                         cnt = 1
